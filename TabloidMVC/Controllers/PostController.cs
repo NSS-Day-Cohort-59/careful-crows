@@ -5,6 +5,8 @@ using Microsoft.VisualBasic;
 using System.Security.Claims;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
+using System.Collections.Generic;
+using TabloidMVC.Models;
 
 namespace TabloidMVC.Controllers
 {
@@ -22,7 +24,8 @@ namespace TabloidMVC.Controllers
 
         public IActionResult Index()
         {
-            var posts = _postRepository.GetAllPublishedPosts();
+
+            List<Post> posts = _postRepository.GetAllPublishedPosts();
             return View(posts);
         }
 
