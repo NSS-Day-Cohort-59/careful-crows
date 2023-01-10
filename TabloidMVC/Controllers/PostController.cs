@@ -30,9 +30,9 @@ namespace TabloidMVC.Controllers
         }
 
         public IActionResult Details(int id)
-        {
-            var post = _postRepository.GetPublishedPostById(id);
-            if (post == null)
+        { //added the Post Type, made the condition post = NOT null
+            Post post = _postRepository.GetPublishedPostById(id);
+            if (post != null )
             {
                 int userId = GetCurrentUserProfileId();
                 post = _postRepository.GetUserPostById(id, userId);
