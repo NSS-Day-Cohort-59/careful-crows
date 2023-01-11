@@ -7,6 +7,8 @@ using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
 using System.Collections.Generic;
 using TabloidMVC.Models;
+using System;
+using System.Reflection;
 
 namespace TabloidMVC.Controllers
 {
@@ -21,6 +23,50 @@ namespace TabloidMVC.Controllers
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
         }
+
+        //addinfg an edit Get action @ Post/Edit/{id}
+        public ActionResult Edit(int id, int userProfileId)
+        {
+            Post post = _postRepository.GetUserPostById(id, userProfileId);
+            List<Category> categoryChoice = _categoryRepository.GetAll(); 
+            
+            PostCreateViewModel postEditView = new PostCreateViewModel()
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Content = post.Content,
+                ImageLocation = post.ImageLocation,
+                CreateDateTime = post.CreateDateTime,
+                PublishDateTime = post.PublishDateTime,
+                IsApproved = post.IsApproved,
+                // how do i get these options? 
+                CategoryId = post.CategoryId,
+                CategoryOptions = post.Category,
+
+
+            }
+
+            // youll need to prefill teh form's fields 
+            return View(post);
+        }
+       
+        //adding an edit POST action @ url: 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(Post post)
+        {
+            try
+            {
+                _postRepository.Add(post);
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+                return View(post);
+            }
+        }
+
 
         public IActionResult Index()
         {
