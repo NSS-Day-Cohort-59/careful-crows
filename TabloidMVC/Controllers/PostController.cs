@@ -28,23 +28,21 @@ namespace TabloidMVC.Controllers
         public ActionResult Edit(int id, int userProfileId)
         {
             Post post = _postRepository.GetUserPostById(id, userProfileId);
-            List<Category> categoryChoice = _categoryRepository.GetAll(); 
-            
-            PostCreateViewModel postEditView = new PostCreateViewModel()
-            {
-                Id = post.Id,
-                Title = post.Title,
-                Content = post.Content,
-                ImageLocation = post.ImageLocation,
-                CreateDateTime = post.CreateDateTime,
-                PublishDateTime = post.PublishDateTime,
-                IsApproved = post.IsApproved,
-                // how do i get these options? 
-                CategoryId = post.CategoryId,
-                CategoryOptions = post.Category,
+            List<Category> categoryChoice = _categoryRepository.GetAll();
 
-
-            }
+            //PostCreateViewModel postEditView = new PostCreateViewModel()
+            //{
+            //    Id = post.Id,
+            //    Title = post.Title,
+            //    Content = post.Content,
+            //    ImageLocation = post.ImageLocation,
+            //    CreateDateTime = post.CreateDateTime,
+            //    PublishDateTime = post.PublishDateTime,
+            //    IsApproved = post.IsApproved,
+            //    // how do i get these options? 
+            //    CategoryId = post.CategoryId,
+            //    Category = categoryChoice
+            //};
 
             // youll need to prefill teh form's fields 
             return View(post);
@@ -57,7 +55,7 @@ namespace TabloidMVC.Controllers
         {
             try
             {
-                _postRepository.Add(post);
+                _postRepository.Add(post); //bad code here: adds edits as a new post
 
                 return RedirectToAction("Index");
             }
