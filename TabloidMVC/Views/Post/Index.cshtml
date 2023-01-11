@@ -9,8 +9,9 @@
     <h1>Posts</h1>
 
     <p>
-        <a class="btn btn-primary" asp-action="Create">New Post</a>
+        <a class="btn btn-primary" asp-action="Create">Create a New Post!</a>
     </p>
+    
     <table class="table table-striped">
         <thead>
             <tr>
@@ -23,7 +24,8 @@
                 <th>
                     @Html.DisplayNameFor(model => model.CategoryId)
                 </th>
-                <th>
+             
+                <th> @*this hsould be hidden somehow.. the same way teh iD is hidden*@
                     @Html.DisplayNameFor(model => model.PublishDateTime)
                 </th>
                 <th></th>

@@ -5,6 +5,8 @@ using Microsoft.VisualBasic;
 using System.Security.Claims;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
+using System.Collections.Generic;
+using TabloidMVC.Models;
 
 namespace TabloidMVC.Controllers
 {
@@ -22,14 +24,15 @@ namespace TabloidMVC.Controllers
 
         public IActionResult Index()
         {
-            var posts = _postRepository.GetAllPublishedPosts();
+
+            List<Post> posts = _postRepository.GetAllPublishedPosts();
             return View(posts);
         }
 
         public IActionResult Details(int id)
-        {
-            var post = _postRepository.GetPublishedPostById(id);
-            if (post == null)
+        { //added the Post Type, made the condition post = NOT null
+            Post post = _postRepository.GetPublishedPostById(id);
+            if (post != null )
             {
                 int userId = GetCurrentUserProfileId();
                 post = _postRepository.GetUserPostById(id, userId);
