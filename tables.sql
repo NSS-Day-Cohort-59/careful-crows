@@ -1,2 +1,2 @@
 select * from UserProfile
-select * from Post
+select * from Category
