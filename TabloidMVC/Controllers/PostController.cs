@@ -48,7 +48,7 @@ namespace TabloidMVC.Controllers
         {
             try
             {
-                _postRepository.Add(GetPublishedPostById(userProfileId); //bad code here: adds edits as a new post
+             //   _postRepository.Add(GetPublishedPostById(userProfileId)); //bad code here: adds edits as a new post
 
                 return RedirectToAction("Index");
             }
