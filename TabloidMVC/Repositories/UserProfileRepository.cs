@@ -66,6 +66,7 @@ namespace TabloidMVC.Repositories
                         SELECT up.Id, up.FirstName, up.LastName, up.ImageLocation, up.DisplayName, up.Email, up.CreateDateTime, up.UserTypeId, ut.Name 
                         FROM UserProfile up Join UserType ut
                         ON up.UserTypeId = ut.Id
+                        ORDER BY up.DisplayName
                     ";
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
