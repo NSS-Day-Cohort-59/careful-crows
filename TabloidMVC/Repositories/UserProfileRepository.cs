@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using TabloidMVC.Models;
 using TabloidMVC.Utils;
 
@@ -50,6 +52,77 @@ namespace TabloidMVC.Repositories
                     reader.Close();
 
                     return userProfile;
+                }
+            }
+        }
+        public List<UserProfile> GetAllUserProfiles()
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT up.Id, up.FirstName, up.LastName, up.ImageLocation, up.DisplayName, up.Email, up.CreateDateTime, up.UserTypeId, ut.Name 
+                        FROM UserProfile up Join UserType ut
+                        ON up.UserTypeId = ut.Id
+                        ORDER BY up.DisplayName
+                    ";
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        List<UserProfile> userProfiles = new List<UserProfile>();
+                        while (reader.Read())
+                        {
+                            UserProfile userProfile = new UserProfile
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                                //ImageLocation = !reader.IsDBNull(reader.GetOrdinal("ImageLocation")) ? reader.GetString(reader.GetOrdinal("ImageLocation")) : null,
+                                DisplayName = reader.GetString(reader.GetOrdinal("DisplayName")),
+                                Email = reader.GetString(reader.GetOrdinal("Email")),
+                                //CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
+                                
+                            };
+                            UserType userType = new UserType
+                            {
+                                Name = reader.GetString(reader.GetOrdinal("Name"))
+                            };
+                            userProfile.UserType = userType;
+                            userProfiles.Add(userProfile);
+                        }
+
+                        return userProfiles;
+                    }
+                }
+            }
+        }
+
+        public void AddUser(UserProfile user)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                    INSERT INTO UserProfile ([DisplayName], FirstName, LastName, Email, CreateDateTime, UserTypeId)
+                    OUTPUT INSERTED.ID
+                    VALUES (@displayName, @firstName, @lastName, @email, @createDateTime, @userTypeId);
+                ";
+
+
+                    cmd.Parameters.AddWithValue("@displayName", user.DisplayName);
+                    cmd.Parameters.AddWithValue("@firstName", user.FirstName);
+                    cmd.Parameters.AddWithValue("@lastName", user.LastName);
+                    cmd.Parameters.AddWithValue("@email", user.Email);
+                    cmd.Parameters.AddWithValue("@createDateTime", System.DateTime.Now);
+                    cmd.Parameters.AddWithValue("@userTypeId", 2);
+
+                    int id = (int)cmd.ExecuteScalar();
+
+                    user.Id = id;
                 }
             }
         }
