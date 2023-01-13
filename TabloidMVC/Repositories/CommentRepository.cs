@@ -20,7 +20,7 @@ namespace TabloidMVC.Repositories
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT Id, PostId, UserProfileId, Subject, Content, CreateDateTime FROM Comment";
+                    cmd.CommandText = "SELECT Id, PostId, UserProfileId, Subject, Content, CreateDateTime FROM Comment WHERE CreateDateTime < SYSDATETIME()";
                     var reader = cmd.ExecuteReader();
 
                     var comments = new List<Comment>();
@@ -45,10 +45,14 @@ namespace TabloidMVC.Repositories
             }
         }
 
-        public List<Comment> GetCommentsByPostId(int postId)
+        /*public List<Comment> GetCommentsByPostId(int id, int postId)
         {
-            
-        }
+            using (var conn = Connection) 
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+            }
+        }*/
 
         public void AddComment(Comment comment)
         {
@@ -63,11 +67,13 @@ namespace TabloidMVC.Repositories
                         OUTPUT INSERTED.ID
                         VALUES (
                         @PostId, @UserProfileId, @Subject, @Content, @CreateDateTime )";
+
                     cmd.Parameters.AddWithValue("@PostId", comment.PostId);
                     cmd.Parameters.AddWithValue("@UserProfileId", comment.UserProfileId);
                     cmd.Parameters.AddWithValue("@Subject", comment.Subject);
                     cmd.Parameters.AddWithValue("@Content", comment.Content);
-                    cmd.Parameters.AddWithValue("@CreateDateTime", comment.CreateDateTime);
+                    cmd.Parameters.AddWithValue("@CreateDateTime", DateTime.Now);
+                   
 
                     comment.Id = (int)cmd.ExecuteScalar();
                 }

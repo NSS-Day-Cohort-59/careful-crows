@@ -1,16 +1,24 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TabloidMVC.Repositories;
+using System;
+using TabloidMVC.Models;
+using System.Collections.Generic;
 
 namespace TabloidMVC.Controllers
 {
     public class CommentController : Controller
     {
-        private readonly ICommentRepository _commentRepository;
+        private readonly ICommentRepository _commentRepo;
+
+        public CommentController(ICommentRepository commentRepository)
+        {
+            _commentRepo = commentRepository;
+        }
         // GET: CommentController
         public ActionResult Index()
         {
-            var comments = _commentRepository.GetAllPostedComments();
+            List<Comment> comments = _commentRepo.GetAllPostedComments();
             return View(comments);
         }
 
@@ -21,23 +29,29 @@ namespace TabloidMVC.Controllers
         }
 
         // GET: CommentController/Create
-        public ActionResult Create()
+        public ActionResult Create(int id)
         {
+
             return View();
         }
 
         // POST: CommentController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Comment comment, Post post, UserProfile userProfile)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                
+                comment.PostId = post.Id;
+                comment.UserProfileId = userProfile.Id;
+                _commentRepo.AddComment(comment);
+                return RedirectToAction("Index");
+               
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                return View(comment);
             }
         }
 

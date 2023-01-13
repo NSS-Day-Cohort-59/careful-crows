@@ -4,17 +4,14 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Comments</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @Html.ActionLink("New", "Create", new { id=1 }) 
 </p>
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.PostId)
-            </th>
             <th>
                 @Html.DisplayNameFor(model => model.UserProfileId)
             </th>
@@ -33,12 +30,6 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PostId)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.UserProfileId)
             </td>
